@@ -1,0 +1,29 @@
+# Build artifacts
+*.o
+*.so
+*.a
+pqc-plugin/test_pqc
+vpn-config/pqc_vpn_wrapper
+
+# Secrets and sensitive data
+ipsec.secrets
+*_secret_*.bin
+*.key
+*.pem
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+
+# Temporary files
+/tmp/
