@@ -309,3 +309,27 @@ sequenceDiagram
     
     Note over C,S: IPsec Tunnel Established (Quantum-Safe!)
 ```
+
+## 📐 Detailed Architecture
+```mermaid
+sequenceDiagram
+    participant C as VPN Client
+    participant K as Kyber-768 KEM
+    participant S as VPN Server
+    
+    C->>K: Generate Keypair
+    K-->>C: Public Key (1184B)
+    C->>S: Send Public Key
+    S->>K: Encapsulate(Public Key)
+    K-->>S: Ciphertext + Shared Secret (32B)
+    S->>C: Send Ciphertext (1088B)
+    C->>K: Decapsulate(Ciphertext)
+    K-->>C: Shared Secret (32B)
+    
+    Note over C,S: Both have matching 32-byte secret
+    
+    C->>S: IKEv2 AUTH (PSK derived from secret)
+    S-->>C: IKEv2 AUTH Response
+    
+    Note over C,S: IPsec Tunnel Established (Quantum-Safe!)
+```
