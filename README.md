@@ -267,8 +267,8 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## 📞 Contact
 
-**Project Author**: [Your Name]  
-**Project Link**: [https://github.com/yourusername/pqc-ipsec-vpn](https://github.com/yourusername/pqc-ipsec-vpn)
+**Project Author**: Veeraa Vikash.S
+**Project Link**: [https://github.com/VeeraaVikash/pqc-ipsec-vpn](https://github.com/VeeraaVikash/pqc-ipsec-vpn)
 
 ---
 
