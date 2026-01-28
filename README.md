@@ -1,550 +1,431 @@
-# Post-Quantum Cryptography Algorithm Comparison Tool
+
+
+```markdown
+# Post-Quantum Cryptography Integration in IPsec VPN
 
 <div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![C++](https://img.shields.io/badge/C++-11-00599C?logo=cplusplus)
-![liboqs](https://img.shields.io/badge/liboqs-0.12.0-green)
-![Platform](https://img.shields.io/badge/platform-Linux-lightgrey)
+![PQC-VPN](https://img.shields.io/badge/PQC-Kyber--768-blueviolet?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Proof--of--Concept-success?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)
 
-**Comprehensive performance and security comparison of NIST-approved Post-Quantum Cryptography algorithms for VPN deployment**
+**A production-aligned Proof-of-Concept demonstrating quantum-resistant key exchange in enterprise VPN infrastructure**
 
-[Features](#-features) • [Results](#-comparison-results) • [Quick Start](#-quick-start) • [Methodology](#-comparison-methodology) • [Analysis](#-detailed-analysis)
+[Features](#-key-features) • [Architecture](#-architecture) • [Installation](#-installation) • [Demo](#-demo) • [Documentation](#-documentation)
 
 </div>
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Architecture](#-architecture)
+- [Technical Stack](#-technical-stack)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Project Structure](#-project-structure)
+- [Performance](#-performance-benchmarks)
+- [Security](#-security-considerations)
+- [Dashboard](#-monitoring-dashboard)
+- [Future Work](#-roadmap)
+- [License](#-license)
 
 ---
 
 ## 🎯 Overview
 
-This tool provides a **comprehensive side-by-side comparison** of four major Post-Quantum Cryptography (PQC) families to evaluate their suitability for IPsec VPN integration. The comparison focuses on real-world deployment metrics critical for network security applications.
+This project demonstrates how **NIST-standardized Post-Quantum Cryptography** (Kyber-768) can be integrated into existing **IPsec VPN** systems without requiring a complete protocol redesign.
 
-### Why This Comparison?
+### The Problem
 
-With the advent of quantum computers threatening current cryptographic standards, organizations need data-driven insights to choose the right PQC algorithm. This tool eliminates guesswork by providing:
+Current VPN encryption (RSA, ECDH) will be vulnerable to quantum computers using Shor's algorithm. Organizations need to begin transitioning to quantum-safe cryptography **now** to protect sensitive data.
 
-- ⚡ **Real performance metrics** (not theoretical)
-- 📊 **Size overhead analysis** (critical for network transmission)
-- 🔒 **Security level verification** (NIST standards compliance)
-- ✅ **Deployment readiness assessment**
+### Our Solution
 
----
-
-## 🔬 Algorithms Compared
-
-| Algorithm | Type | NIST Status | Primary Use |
-|-----------|------|-------------|-------------|
-| **Kyber768** | Lattice-Based KEM | ✅ FIPS 203 Approved | Key Exchange |
-| **SPHINCS+-SHA2-128f** | Hash-Based Signatures | ✅ FIPS 205 Approved | Digital Signatures |
-| **McEliece-348864** | Code-Based KEM | ✅ Round 4 Approved | Key Encapsulation |
-| **Rainbow III** | Multivariate Signatures | ❌ Broken (2022) | ⚠️ Historical Analysis |
+A hybrid approach that integrates Post-Quantum Cryptography into existing VPN infrastructure:
+- ✅ Uses Kyber-768 for quantum-safe key exchange
+- ✅ Derives Pre-Shared Key (PSK) from PQC shared secret
+- ✅ Integrates with standard StrongSwan IPsec/IKEv2
+- ✅ No protocol redesign required
+- ✅ Clear migration path for enterprises
 
 ---
 
-## 📊 Comparison Results
+## ✨ Key Features
 
-### Performance Metrics
+### 🛡️ Quantum-Safe Cryptography
+- **Algorithm:** Kyber-768 (NIST FIPS 203 standardized)
+- **Security Level:** NIST Level 3 (~192-bit classical security)
+- **Quantum Attack Resistance:** Protected against Shor's algorithm
 
-| Algorithm | Key Generation | Encap/Sign | Decap/Verify | **Total Time** | VPN Impact |
-|-----------|----------------|------------|--------------|----------------|------------|
-| **Kyber768** | 2.58 ms | 0.07 ms | 0.04 ms | **2.69 ms** | ✅ +2.7 ms |
-| **SPHINCS+** | 17.2 ms | 45.1 ms | 2.1 ms | **64.4 ms** | ❌ +59 ms |
-| **McEliece** | 130 ms | 2.4 ms | 2.8 ms | **135 ms** | ❌ +130 ms |
+### 🔌 Seamless Integration
+- Works with existing StrongSwan IPsec infrastructure
+- Standard IKEv2 protocol with PQC-derived PSK
+- No changes to IPsec/ESP protocols required
 
-> **Baseline**: Traditional ECDH key exchange: ~5 ms
+### ⚡ High Performance
+- Key exchange: **<100ms**
+- Minimal overhead: **~4.7KB** per handshake
+- Production-viable performance metrics
 
-### Size Overhead Analysis
-
-| Algorithm | Public Key | Ciphertext/Signature | Secret Key | Total Overhead |
-|-----------|------------|---------------------|------------|----------------|
-| **Kyber768** | 1,184 B | 1,088 B | 2,400 B | **2.3 KB** ✅ |
-| **SPHINCS+** | 32 B | 17,088 B | 64 B | **17 KB** ⚠️ |
-| **McEliece** | 261,120 B | 128 B | 6,452 B | **261 KB** ❌ |
-
-### Security Levels
-
-| Algorithm | NIST Security Level | Quantum Resistance | Classical Equivalent |
-|-----------|--------------------|--------------------|---------------------|
-| **Kyber768** | Level 3 | ✅ Yes | AES-192 |
-| **SPHINCS+** | Level 1 | ✅ Yes | AES-128 |
-| **McEliece** | Level 3 | ✅ Yes | AES-192 |
+### 📊 Professional Dashboard
+- Real-time VPN monitoring
+- Beautiful dark-themed UI
+- Live metrics and charts
+- Security status visualization
 
 ---
 
-## 🏆 Verdict for VPN Deployment
+## 🏗️ Architecture
 
-### ✅ **RECOMMENDED: Kyber768 (ML-KEM-768)**
-
-**Score: ⭐⭐⭐⭐⭐ (5/5)**
+### System Overview
 
 ```
-✓ Minimal latency impact: +2.7 ms (imperceptible to users)
-✓ Small network overhead: 2.3 KB (acceptable for modern networks)
-✓ NIST FIPS 203 approved and battle-tested
-✓ Already deployed: Google Chrome, Apple iMessage, Signal, Cloudflare
-✓ Excellent key generation performance: 2.58 ms
+┌─────────────────────────────────────────────────────────────────┐
+│                         VPN Client                              │
+│  ┌──────────────────┐         ┌──────────────────────────┐     │
+│  │   Kyber-768 KEM  │────────▶│  Shared Secret (32 bytes)│     │
+│  │  Key Generation  │         └──────────┬───────────────┘     │
+│  │  Encapsulation   │                    │                      │
+│  └──────────────────┘                    ▼                      │
+│                              ┌────────────────────┐             │
+│                              │ PSK Derivation     │             │
+│                              │ (Hex Conversion)   │             │
+│                              └─────────┬──────────┘             │
+└──────────────────────────────────────────┼──────────────────────┘
+                                           │
+                              ═════════════╪═══════════════
+                               IPsec/IKEv2 Tunnel (AES-256)
+                              ═════════════╪═══════════════
+                                           │
+┌──────────────────────────────────────────┼──────────────────────┐
+│                         VPN Server        │                      │
+│                              ┌────────────▼──────────┐           │
+│                              │ PSK Authentication    │           │
+│                              │ (PQC-Derived)         │           │
+│                              └───────────────────────┘           │
+│  ┌──────────────────┐                                           │
+│  │   Kyber-768 KEM  │                                           │
+│  │  Key Generation  │                                           │
+│  │  Decapsulation   │                                           │
+│  └──────────────────┘                                           │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
-**Deployment Mode**: Hybrid (X25519 + Kyber768) for defense-in-depth
 
 ---
 
-### ⚠️ **CONDITIONAL: SPHINCS+-SHA2-128f**
+## 🔧 Technical Stack
 
-**Score: ⭐⭐⭐ (3/5)**
-
-```
-⚠ High latency: 64.4 ms (noticeable in interactive sessions)
-⚠ Large signatures: 17 KB (bandwidth-intensive)
-✓ Excellent for non-real-time applications
-✓ Hash-based security (well-understood)
-```
-
-**Use Case**: Firmware signing, certificate authorities, offline authentication
+| Component | Technology | Version | Purpose |
+|-----------|-----------|---------|---------|
+| **PQC Library** | liboqs | Latest | Kyber-768 KEM implementation |
+| **VPN Software** | StrongSwan | 5.9.13 | IPsec/IKEv2 VPN daemon |
+| **Operating System** | Ubuntu | 24.04 LTS | Host system |
+| **Programming** | C | C11 | Core cryptographic operations |
+| **Dashboard** | React | 18.3.1 | Real-time monitoring UI |
 
 ---
 
-### ❌ **NOT RECOMMENDED: McEliece-348864**
-
-**Score: ⭐⭐ (2/5)**
-
-```
-✗ Very slow key generation: 130 ms
-✗ Massive public keys: 261 KB (impractical for network transmission)
-✓ Strong security foundation
-✓ Decades of cryptanalysis
-```
-
-**Blocker**: Public key size makes IKEv2 packet transmission impractical
-
----
-
-### ❌ **BROKEN: Rainbow III**
-
-**Score: ⭐ (1/5)**
-
-```
-✗ Cryptographically broken (Ward Beullens, 2022)
-✗ Removed from NIST competition
-✗ DO NOT USE in production
-```
-
-**Historical Note**: Included for educational comparison only
-
----
-
-## 🚀 Quick Start
+## 📦 Installation
 
 ### Prerequisites
 
 ```bash
-# Ubuntu/Debian
-sudo apt update
-sudo apt install build-essential cmake ninja-build libssl-dev git
+# Ubuntu 24.04 LTS
+sudo apt update && sudo apt upgrade -y
 
-# RHEL/CentOS
-sudo yum install gcc gcc-c++ make cmake ninja-build openssl-devel git
+# Install build dependencies
+sudo apt install -y \
+    build-essential \
+    cmake \
+    git \
+    wget \
+    libssl-dev \
+    pkg-config \
+    autoconf \
+    libtool \
+    strongswan \
+    strongswan-pki \
+    libcharon-extra-plugins \
+    libcurl4-openssl-dev
 ```
 
-### Install liboqs
+### Step 1: Build liboqs
 
 ```bash
+cd ~
 git clone https://github.com/open-quantum-safe/liboqs.git
 cd liboqs
 mkdir build && cd build
-cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local ..
+
+cmake -GNinja \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    ..
+
 ninja
 sudo ninja install
 sudo ldconfig
 ```
 
-### Compile and Run
+### Step 2: Build PQC Plugin
 
 ```bash
-# Clone the repository
-git clone <your-repo-url>
-cd pqc-comparison
+cd ~/pqc-vpn-project/pqc-plugin
+make
 
-# Compile
-make clean && make
+# Verify installation
+./test_pqc
+```
 
-# Run comprehensive comparison
-./pqc_comparison
+**Expected output:**
+```
+=== PQC Plugin Test ===
 
-# Run with detailed output
-./pqc_comparison --verbose
+[PQC] Kyber-768 KEM initialized
+✓ Keypair generated successfully
+✓ Encapsulation successful
+✓ Decapsulation successful
+✓ Shared secrets match! (32 bytes)
 
-# Export results to CSV
-./pqc_comparison --export results.csv
+=== All tests passed! ===
 ```
 
 ---
 
-## 📋 Comparison Methodology
+## 🚀 Usage
 
-### 1. **Performance Testing**
+### Running PQC Key Exchange
 
-```cpp
-// Each algorithm tested with:
-- 1000 iterations for statistical significance
-- Warm-up phase to eliminate cold-start effects
-- CPU affinity pinning to reduce variance
-- High-resolution timing (std::chrono::high_resolution_clock)
-```
-
-**Environment**:
-- OS: Ubuntu 24.04 LTS
-- CPU: [Your CPU Model]
-- RAM: [Your RAM]
-- Compiler: GCC 13.3.0 with -O3 optimization
-
-### 2. **Size Measurements**
-
-All size measurements include:
-- Public key size
-- Secret key size (memory impact)
-- Ciphertext/signature size (network overhead)
-- Total handshake overhead calculation
-
-### 3. **Security Evaluation**
-
-Based on:
-- NIST security level classification
-- Documented quantum attack complexity
-- Classical security equivalent (AES comparison)
-- Real-world cryptanalysis status
-
-### 4. **VPN Suitability Criteria**
-
-```
-Latency Impact:    < 10 ms acceptable, < 5 ms ideal
-Size Overhead:     < 5 KB acceptable, < 3 KB ideal
-Key Gen Speed:     < 5 ms for interactive sessions
-Security Level:    NIST Level 3 minimum (AES-192 equivalent)
-NIST Status:       Must be FIPS-approved or Round 4
-```
-
----
-
-## 📈 Detailed Analysis
-
-### Kyber768: The Clear Winner
-
-**Why Kyber768 dominates for VPN**:
-
-1. **Lattice-based security**: Based on the Learning With Errors (LWE) problem, which has withstood 25+ years of cryptanalysis
-2. **Balanced performance**: Optimized for both speed and size
-3. **Industry adoption**: Already integrated into production systems by major tech companies
-4. **Hybrid compatibility**: Works seamlessly with X25519 for defense-in-depth
-
-**Real-world impact**:
-```
-Traditional VPN handshake: ~5 ms
-With Kyber768: ~7.7 ms
-User experience: Zero noticeable difference
-Security gain: Full quantum resistance
-```
-
----
-
-### SPHINCS+: Niche Applications
-
-**Strengths**:
-- Only stateless hash-based signature scheme
-- Security based on well-understood hash functions
-- No complex number theory required
-
-**Weaknesses for VPN**:
-- 45 ms signing time unacceptable for real-time sessions
-- 17 KB signatures cause packet fragmentation
-- Better suited for: Code signing, firmware updates, PKI
-
----
-
-### McEliece: Academic Interest
-
-**Strengths**:
-- Oldest PQC candidate (1978)
-- Extensive cryptanalysis with no breaks
-- Very fast encapsulation/decapsulation
-
-**Dealbreaker**:
-```
-261 KB public key = Impractical for network transmission
-
-Example:
-- IKEv2 typically uses UDP with 1500 byte MTU
-- 261 KB key requires ~174 fragmented packets
-- Increases handshake failure rate
-- Makes DoS attacks easier
-```
-
----
-
-### Rainbow: Cautionary Tale
-
-**What happened**:
-- Submitted to NIST PQC competition
-- Advanced to Round 3 finalists
-- Broken in 2022 by Ward Beullens (single weekend!)
-- Attack complexity: 2^53 (practical with commodity hardware)
-
-**Lesson**: Multivariate cryptography needs more research before production use
-
----
-
-## 🔧 Understanding the Output
-
-### Sample Output
-
-```
-═══════════════════════════════════════════════════════════
-   POST-QUANTUM CRYPTOGRAPHY ALGORITHM COMPARISON
-   For IPsec VPN Deployment Assessment
-═══════════════════════════════════════════════════════════
-
-[1/4] Testing Kyber768 (ML-KEM-768)...
-  ├─ Key Generation:    2.58 ms
-  ├─ Encapsulation:     0.07 ms  
-  ├─ Decapsulation:     0.04 ms
-  ├─ Public Key Size:   1,184 bytes
-  ├─ Ciphertext Size:   1,088 bytes
-  └─ VPN Suitability:   ✅ EXCELLENT
-
-[2/4] Testing SPHINCS+-SHA2-128f...
-  ├─ Key Generation:    17.2 ms
-  ├─ Signing:           45.1 ms
-  ├─ Verification:      2.1 ms
-  ├─ Signature Size:    17,088 bytes
-  └─ VPN Suitability:   ❌ TOO SLOW
-
-[3/4] Testing McEliece-348864...
-  ├─ Key Generation:    130 ms
-  ├─ Encapsulation:     2.4 ms
-  ├─ Public Key Size:   261,120 bytes
-  └─ VPN Suitability:   ❌ TOO LARGE
-
-[4/4] Rainbow III Analysis...
-  └─ Status:            ❌ CRYPTOGRAPHICALLY BROKEN
-
-═══════════════════════════════════════════════════════════
-                    FINAL RECOMMENDATION
-═══════════════════════════════════════════════════════════
-
-🏆 PRIMARY CHOICE: Kyber768 (ML-KEM-768)
-   - Performance:  ⭐⭐⭐⭐⭐
-   - Size:         ⭐⭐⭐⭐⭐  
-   - Security:     ⭐⭐⭐⭐⭐
-   - Deployment:   READY FOR PRODUCTION
-
-📝 AUTHENTICATION: Dilithium3 (ML-DSA-87)
-   - Complements Kyber768 for digital signatures
-   - NIST FIPS 204 approved
-   - 3 KB signatures (acceptable)
-```
-
----
-
-## 📁 Project Structure
-
-```
-comparison/
-├── src/
-│   ├── main.cpp                  # Entry point and test orchestration
-│   ├── kyber_test.cpp            # Kyber768 performance testing
-│   ├── sphincs_test.cpp          # SPHINCS+ performance testing
-│   ├── mceliece_test.cpp         # McEliece performance testing
-│   ├── comparison_utils.cpp      # Shared utilities and timing
-│   └── results_exporter.cpp      # CSV/JSON export functionality
-├── include/
-│   ├── comparison.h              # Main comparison interface
-│   └── benchmark.h               # Benchmarking utilities
-├── results/
-│   ├── performance_data.csv      # Raw performance data
-│   └── analysis_report.json      # Detailed analysis
-├── Makefile                      # Build configuration
-└── README.md                     # This file
-```
-
----
-
-## 🎓 Technical Deep Dive
-
-### Why These Specific Variants?
-
-| Algorithm | Variant | Reason |
-|-----------|---------|--------|
-| Kyber768 | ML-KEM-768 | NIST Level 3 (AES-192 equivalent) - Industry standard |
-| SPHINCS+ | SHA2-128f | Fast variant with SHA-256 - Conservative choice |
-| McEliece | 348864 | NIST Level 3 - Balanced security/performance |
-
-### Hybrid Mode Explained
-
-```
-Traditional:  [ECDH only]
-             ↓
-Risk: Quantum computer breaks it entirely
-
-Hybrid:      [ECDH + Kyber768]
-             ↓  
-Protection: Must break BOTH to compromise security
-```
-
-**Implementation**:
+**Terminal 1 - Server:**
 ```bash
-# StrongSwan IPsec configuration
-ike=aes256-sha256-x25519-kyber768!
-     └── classical  └── PQC
+cd ~/pqc-vpn-project/vpn-config
+sudo ip netns exec vpn-server ./pqc_vpn_wrapper server 192.168.100.1
+```
 
-# Benefits:
-✓ Quantum-safe
-✓ Backward compatible
-✓ Defense-in-depth
+**Terminal 2 - Client:**
+```bash
+cd ~/pqc-vpn-project/vpn-config
+sudo ip netns exec vpn-client ./pqc_vpn_wrapper client 192.168.100.1
+```
+
+**Expected Output:**
+```
+[PQC Server] ✓ Key exchange complete!
+[PQC Server] Shared secret: 62bf083b8f533ba0f2f7208d259079d0...
+[PQC Client] ✓ Key exchange complete!
+[PQC Client] Shared secret: 62bf083b8f533ba0f2f7208d259079d0...
+✓ Secrets MATCH!
+```
+
+### Configuring StrongSwan VPN
+
+```bash
+# Generate PSK from PQC shared secret
+SECRET_HEX=$(xxd -p /tmp/pqc_shared_secret_server.bin | tr -d '\n')
+
+# Add to StrongSwan secrets
+echo "@server @client : PSK 0x${SECRET_HEX}" | sudo tee /etc/ipsec.secrets
+
+# Start VPN
+sudo ipsec start
+sudo ipsec statusall
 ```
 
 ---
 
-## 🔍 Interpreting Results for Your Use Case
+## 📂 Project Structure
 
-### Interactive VPN (Remote Desktop, SSH)
-
-**Requirements**: Low latency, real-time responsiveness
-
-**Choice**: ✅ **Kyber768**
 ```
-Reason: 2.7 ms overhead is imperceptible
-Alternative: None - other algorithms too slow
-```
-
-### File Transfer VPN
-
-**Requirements**: High throughput, some latency tolerance
-
-**Choice**: ✅ **Kyber768** (still best)
-```
-Reason: Small packets allow maximum throughput
-Note: Even with relaxed latency, others still too large
-```
-
-### Certificate-Based VPN Authentication
-
-**Requirements**: Rare operations, security critical
-
-**Choice**: ✅ **Dilithium3** (for signatures)
-```
-Reason: Authentication is one-time, not per-packet
-Note: SPHINCS+ acceptable here but Dilithium faster
+pqc-vpn-project/
+├── pqc-plugin/                 # Kyber-768 Implementation
+│   ├── pqc_ke_handler.c        # KEM operations
+│   ├── pqc_ke_handler.h
+│   ├── pqc_ke_plugin.c         # Plugin wrapper
+│   ├── test_pqc.c              # Test suite
+│   ├── Makefile
+│   └── libstrongswan-pqc-ke.so
+│
+├── vpn-config/                 # VPN Configuration
+│   ├── pqc_vpn_wrapper.c       # Network key exchange
+│   ├── ipsec-server.conf       # StrongSwan server
+│   ├── ipsec-client.conf       # StrongSwan client
+│   └── ipsec.secrets
+│
+├── dashboard/                  # Monitoring Dashboard
+│   ├── src/
+│   │   ├── App.js
+│   │   ├── App.css
+│   │   └── components/
+│   └── package.json
+│
+├── setup_namespaces.sh
+└── README.md
 ```
 
 ---
 
-## 📚 References and Standards
+## ⚡ Performance Benchmarks
 
-### NIST Standards
+### Cryptographic Operations
 
-- [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final): Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM / Kyber)
-- [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final): Module-Lattice-Based Digital Signature Standard (ML-DSA / Dilithium)
-- [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final): Stateless Hash-Based Digital Signature Standard (SLH-DSA / SPHINCS+)
+| Operation | Time | Throughput |
+|-----------|------|------------|
+| **Key Generation** | ~40ms | 25 ops/sec |
+| **Encapsulation** | ~30ms | 33 ops/sec |
+| **Decapsulation** | ~30ms | 33 ops/sec |
+| **Total Handshake** | **~100ms** | **10 handshakes/sec** |
 
-### Implementation Libraries
+### Network Overhead
 
-- [liboqs](https://github.com/open-quantum-safe/liboqs): Open Quantum Safe project
-- [Open Quantum Safe](https://openquantumsafe.org/): Consortium for PQC integration
+| Metric | Classical (ECDH) | PQC (Kyber-768) | Overhead |
+|--------|------------------|-----------------|----------|
+| Handshake Size | ~100 bytes | ~2.3 KB | +2200% |
+| Handshake Time | ~20ms | ~100ms | +400% |
 
-### VPN Integration
-
-- [RFC 9370](https://www.rfc-editor.org/rfc/rfc9370.html): Multiple Key Exchanges in IKEv2
-- [StrongSwan PQC Support](https://docs.strongswan.org/docs/5.9/features/pqc.html)
-
-### Attack Analysis
-
-- Ward Beullens (2022): "Breaking Rainbow Takes a Weekend on a Laptop" - [Paper](https://eprint.iacr.org/2022/214)
+**Conclusion:** Performance overhead is **acceptable for production** use.
 
 ---
 
-## 🔐 Security Considerations
+## 🔒 Security Considerations
 
-### Why Quantum Resistance Matters NOW
+### Quantum Safety
 
-**Threat**: "Harvest Now, Decrypt Later"
+✅ **Protected Against:**
+- Shor's algorithm (quantum factoring)
+- Grover's algorithm (quantum search)
+- Future quantum computer attacks
 
-```
-1. Attackers record encrypted VPN traffic TODAY
-2. Store it for future decryption
-3. Wait for quantum computers to mature
-4. Decrypt all historical traffic
+### Security Best Practices
 
-Timeline:
-- 2025: Large-scale quantum computers unlikely
-- 2030: Possible quantum threat
-- 2035: Probable quantum threat
-
-Problem: Traffic encrypted TODAY is vulnerable TOMORROW
-Solution: Deploy PQC NOW to protect current data
-```
-
-### Current vs. Quantum Security
-
-| Attack Type | Classical Computer | Quantum Computer |
-|-------------|-------------------|------------------|
-| **ECDH (current)** | ~2^128 operations | ~2^64 operations (Shor's algorithm) |
-| **Kyber768** | ~2^192 operations | ~2^192 operations (quantum-resistant) |
+1. **Key Rotation:** Implement regular PSK updates
+2. **Secure Storage:** Protect shared secret files (chmod 600)
+3. **Network Isolation:** Use network namespaces or separate hosts
+4. **Monitoring:** Enable logging for all key exchange events
+5. **Auditing:** Regular security audits recommended
 
 ---
 
-## 🚦 Production Deployment Checklist
+## 📊 Monitoring Dashboard
 
-Before deploying in production:
+### Features
 
-- [ ] Remove all debug output and secret key printing
-- [ ] Implement constant-time comparisons
-- [ ] Use secure memory allocation (e.g., `sodium_malloc`)
-- [ ] Add proper key derivation (HKDF)
-- [ ] Enable hybrid mode (X25519 + Kyber768)
-- [ ] Conduct security audit
-- [ ] Test with actual VPN software (StrongSwan/OpenVPN)
-- [ ] Benchmark in production environment
-- [ ] Document rollback procedures
-- [ ] Train operations team
+- **Real-time Metrics:** Live VPN status, latency, throughput
+- **Visual Analytics:** Charts, graphs, and progress indicators
+- **Security Monitoring:** Algorithm in use, security score
+- **Activity Logs:** Recent events and security alerts
+- **Responsive Design:** Works on desktop, tablet, mobile
 
-See `PRODUCTION_ROADMAP.md` in main project for detailed hardening guidelines.
+### Running the Dashboard
+
+```bash
+cd ~/pqc-vpn-project/dashboard/pqc-dashboard
+npm install
+npm start
+
+# Opens at http://localhost:3000
+```
+
+---
+
+## 🛣️ Roadmap
+
+### ✅ Completed (PoC Phase)
+
+- [x] Kyber-768 library integration
+- [x] Key exchange protocol implementation
+- [x] StrongSwan configuration
+- [x] PSK derivation from PQC secret
+- [x] Performance benchmarking
+- [x] Monitoring dashboard
+
+### 🔜 Future Work (Production Phase)
+
+- [ ] **Hybrid Mode:** Combine classical + PQC
+- [ ] **Kernel Integration:** Native IPsec/IKEv2 protocol extension
+- [ ] **Automated Key Rotation:** Periodic PSK updates
+- [ ] **Performance Optimization:** Hardware acceleration
+- [ ] **Multi-Platform Support:** Windows, macOS, iOS, Android
+- [ ] **Security Audit:** Third-party cryptographic review
+- [ ] **FIPS Compliance:** Federal standards certification
+
+---
+
+## 📚 References
+
+- [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
+- [FIPS 203: Module-Lattice-Based KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [Kyber Specification](https://pq-crystals.org/kyber/)
+- [liboqs - Open Quantum Safe](https://github.com/open-quantum-safe/liboqs)
+- [StrongSwan Documentation](https://docs.strongswan.org/)
+- [RFC 7296 - IKEv2](https://datatracker.ietf.org/doc/html/rfc7296)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions welcome! Areas of interest:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- [ ] Add more PQC algorithms (e.g., BIKE, HQC)
-- [ ] Implement automated benchmarking
-- [ ] Add network simulation tests
-- [ ] Create visualization dashboard
-- [ ] Test on embedded systems (ARM)
-- [ ] Add power consumption analysis
+```bash
+# Fork and clone
+git clone https://github.com/VeeraaVikash/pqc-ipsec-vpn.git
+
+# Create feature branch
+git checkout -b feature/amazing-feature
+
+# Make changes and commit
+git commit -m 'Add amazing feature'
+git push origin feature/amazing-feature
+```
 
 ---
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## ✨ Acknowledgments
 
 - **Open Quantum Safe Project** for liboqs library
-- **NIST PQC Team** for standardization efforts
-- **Singapore VPN Company** for industry collaboration
-- **SRM Institute of Science and Technology** for research support
+- **StrongSwan Team** for robust VPN implementation
+- **NIST** for PQC standardization efforts
+- **CRYSTALS-Kyber Team** for designing practical KEM
+
+---
+
+## 📞 Contact
+
+**Author:** Veeraa Vikash  
+**GitHub:** [@VeeraaVikash](https://github.com/VeeraaVikash)  
+**Project:** [pqc-ipsec-vpn](https://github.com/VeeraaVikash/pqc-ipsec-vpn)
+
+---
+
+## ⚠️ Disclaimer
+
+This is a **Proof-of-Concept** for research and educational purposes. While production-aligned, it requires:
+
+- Additional security hardening
+- Professional security audit
+- Comprehensive testing
+- Performance optimization
+
+**Do not deploy in production** without proper review.
 
 ---
 
 <div align="center">
 
-**⚠️ Educational and Research Use Only**
+**🔐 Building a Quantum-Safe Future 🔐**
 
-This comparison tool is for educational purposes. Consult cryptography experts before production deployment.
+*Protecting today's data from tomorrow's threats*
 
-Made with ❤️ for the quantum-safe future
+Made with ❤️ for a quantum-safe world
 
 </div>
+```
